@@ -1,5 +1,11 @@
 # opinion-ate
 
+
+An app for tracking reviews of dishes at different restaurants.
+
+Production: <https://zealous-lovelace-397515.netlify.app/>
+
+
 ## Project setup
 ```
 yarn install
