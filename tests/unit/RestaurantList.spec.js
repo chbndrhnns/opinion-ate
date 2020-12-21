@@ -2,14 +2,27 @@ import Vuex from 'vuex';
 import {createLocalVue, mount} from '@vue/test-utils';
 import RestaurantList from '@/components/RestaurantList';
 
+const findByTestId = (wrapper, testId, index) =>
+  wrapper.findAll(`[data-testid=${testId}]`).at(index);
+
 describe('RestaurantList', () => {
+  // have some dummy records
+  const records = [
+    {id: 1, name: 'Sushi Place'},
+    {id: 2, name: 'Pizza Place'},
+  ];
+
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
-  it('loads restaurants on mount', () => {
+  let wrapper;
+  let restaurantModule;
+
+  beforeEach(() => {
     // mock the store module
-    const restaurantModule = {
+    restaurantModule = {
       namespaced: true,
+      state: {records},
       actions: {
         load: jest.fn().mockName('load'),
       },
@@ -22,50 +35,19 @@ describe('RestaurantList', () => {
       },
     });
 
-    mount(RestaurantList, {localVue, store});
+    // create wrapper
+    wrapper = mount(RestaurantList, {
+      localVue,
+      store,
+    });
+  });
 
+  it('loads restaurants on mount', () => {
     expect(restaurantModule.actions.load).toHaveBeenCalled();
   });
 
   it('loads the restaurants', () => {
-    const records = [
-      {
-        id: 1,
-        name: 'Sushi Place',
-      },
-      {
-        id: 2,
-        name: 'Pizza Place',
-      },
-    ];
-
-    const restaurantModule = {
-      namespaced: true,
-      state: {records},
-      actions: {
-        load: jest.fn().mockName('load'),
-      },
-    };
-    const store = new Vuex.Store({
-      modules: {
-        restaurants: restaurantModule,
-      },
-    });
-
-    const wrapper = mount(RestaurantList, {localVue, store});
-
-    const firstRestaurantName = wrapper
-      .findAll('[data-testid="restaurant"]')
-      .at(0)
-      .text();
-
-    expect(firstRestaurantName).toBe('Sushi Place');
-
-    const secondRestaurantName = wrapper
-      .findAll('[data-testid="restaurant"]')
-      .at(1)
-      .text();
-
-    expect(secondRestaurantName).toBe('Pizza Place');
+    expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Sushi Place');
+    expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Pizza Place');
   });
 });
