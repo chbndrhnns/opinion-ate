@@ -25,7 +25,6 @@ describe('RestaurantList', () => {
 
   const mountWithStore = (state = {records, loading: false}) => {
     // mock the store module
-
     restaurantModule = {
       namespaced: true,
       state,
@@ -74,6 +73,16 @@ describe('RestaurantList', () => {
       expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(
         false,
       );
+    });
+  });
+
+  describe('when loading fails', () => {
+    beforeEach(() => {
+      mountWithStore({loadError: true});
+    });
+
+    it('displays the error message', () => {
+      expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(true);
     });
   });
 });

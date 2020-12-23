@@ -12,13 +12,18 @@ describe('restaurants', () => {
   localVue.use(Vuex);
 
   describe('initially', () => {
+    const store = new Vuex.Store({
+      modules: {
+        restaurants: restaurants(),
+      },
+    });
+
     it('does not have a loading flag set', () => {
-      const store = new Vuex.Store({
-        modules: {
-          restaurants: restaurants(),
-        },
-      });
       expect(store.state.restaurants.loading).toEqual(false);
+    });
+
+    it('is not in a error state', () => {
+      expect(store.state.restaurants.loadError).toEqual(false);
     });
   });
 
@@ -44,16 +49,49 @@ describe('restaurants', () => {
     });
   });
 
-  describe('while loading', () => {
-    it('sets a loading flag', async () => {
-      const api = {loadRestaurants: () => new Promise(() => {})};
-      const store = new Vuex.Store({
+  describe('when loading fails', () => {
+    let store;
+
+    beforeEach(() => {
+      const api = {
+        loadRestaurants: () => Promise.reject(),
+      };
+      store = new Vuex.Store({
         modules: {
           restaurants: restaurants(api),
         },
       });
-      store.dispatch('restaurants/load');
+      return store.dispatch('restaurants/load');
+    });
+
+    it('sets an error flag', () => {
+      expect(store.state.restaurants.loadError).toEqual(true);
+    });
+
+    it('clears the loading flag', () => {
+      expect(store.state.restaurants.loading).toEqual(false);
+    });
+  });
+
+  describe('while loading', () => {
+    let store;
+
+    beforeEach(() => {
+      const api = {loadRestaurants: () => new Promise(() => {})};
+      store = new Vuex.Store({
+        modules: {
+          restaurants: restaurants(api, {loadError: true}),
+        },
+      });
+      return store.dispatch('restaurants/load');
+    });
+
+    it('sets a loading flag', () => {
       expect(store.state.restaurants.loading).toEqual(true);
+    });
+
+    it('clears an error flag', () => {
+      expect(store.state.restaurants.loadError).toEqual(false);
     });
   });
 });
