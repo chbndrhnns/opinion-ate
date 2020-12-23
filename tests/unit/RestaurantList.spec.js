@@ -23,7 +23,7 @@ describe('RestaurantList', () => {
   let wrapper;
   let restaurantModule;
 
-  const mountWithStore = (state = {records}) => {
+  const mountWithStore = (state = {records, loading: false}) => {
     // mock the store module
 
     restaurantModule = {
@@ -54,13 +54,6 @@ describe('RestaurantList', () => {
     expect(restaurantModule.actions.load).toHaveBeenCalled();
   });
 
-  it('loads the restaurants', () => {
-    mountWithStore();
-
-    expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Sushi Place');
-    expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Pizza Place');
-  });
-
   it('displays the loading indicator while loading', () => {
     mountWithStore({loading: true});
     expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(
@@ -68,10 +61,19 @@ describe('RestaurantList', () => {
     );
   });
 
-  it('does not display the loading indicator while not loading', () => {
-    mountWithStore({loading: false});
-    expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(
-      false,
-    );
+  describe('when loading succeds', () => {
+    beforeEach(() => {
+      mountWithStore();
+    });
+    it('loads the restaurants', () => {
+      expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Sushi Place');
+      expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Pizza Place');
+    });
+
+    it('does not display the loading indicator while not loading', () => {
+      expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(
+        false,
+      );
+    });
   });
 });
