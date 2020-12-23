@@ -11,26 +11,48 @@ describe('restaurants', () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
-  let store;
-
-  beforeEach(() => {
-    const api = {loadRestaurants: () => Promise.resolve(records)};
-    store = new Vuex.Store({
-      modules: {
-        restaurants: restaurants(api),
-      },
+  describe('initially', () => {
+    it('does not have a loading flag set', () => {
+      const store = new Vuex.Store({
+        modules: {
+          restaurants: restaurants(),
+        },
+      });
+      expect(store.state.restaurants.loading).toEqual(false);
     });
-    return store.dispatch('restaurants/load');
   });
 
   describe('when loading succeeds', () => {
+    let store;
+
+    beforeEach(() => {
+      const api = {loadRestaurants: () => Promise.resolve(records)};
+      store = new Vuex.Store({
+        modules: {
+          restaurants: restaurants(api),
+        },
+      });
+      return store.dispatch('restaurants/load');
+    });
+
     it('stores the restaurant', () => {
       expect(store.state.restaurants.records).toEqual(records);
+    });
+
+    it('clears the loading flag', () => {
+      expect(store.state.restaurants.loading).toEqual(false);
     });
   });
 
   describe('while loading', () => {
-    it('sets a loading flag', () => {
+    it('sets a loading flag', async () => {
+      const api = {loadRestaurants: () => new Promise(() => {})};
+      const store = new Vuex.Store({
+        modules: {
+          restaurants: restaurants(api),
+        },
+      });
+      store.dispatch('restaurants/load');
       expect(store.state.restaurants.loading).toEqual(true);
     });
   });
