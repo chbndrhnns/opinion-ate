@@ -1,5 +1,11 @@
 <template>
   <div>
+    <v-progress-circular
+      v-if="loading"
+      indeterminate
+      color="primary"
+      data-testid="loading-indicator"
+    ></v-progress-circular>
     <v-list-item-content
       data-testid="restaurant"
       v-for="restaurant in restaurants"
@@ -21,6 +27,7 @@ export default {
   }),
   computed: mapState({
     restaurants: state => state.restaurants.records,
+    loading: state => state.restaurants.loading,
   }),
   mounted() {
     this.loadRestaurants();
