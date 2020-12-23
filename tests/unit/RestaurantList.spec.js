@@ -1,11 +1,16 @@
+import Vue from 'vue';
 import Vuex from 'vuex';
 import {createLocalVue, mount} from '@vue/test-utils';
 import RestaurantList from '@/components/RestaurantList';
+import Vuetify from 'vuetify';
 
 const findByTestId = (wrapper, testId, index) =>
   wrapper.findAll(`[data-testid=${testId}]`).at(index);
 
 describe('RestaurantList', () => {
+  // https://github.com/vuetifyjs/vuetify/discussions/4068#discussioncomment-24984
+  Vue.use(Vuetify);
+
   // have some dummy records
   const records = [
     {id: 1, name: 'Sushi Place'},
