@@ -7,6 +7,9 @@ const restaurants = (api, stateOverrides) => ({
     ...stateOverrides,
   },
   actions: {
+    create(context, newRestaurantName) {
+      api.createRestaurant(newRestaurantName);
+    },
     load({commit}) {
       commit('startLoading');
       api
