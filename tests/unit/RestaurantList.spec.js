@@ -23,11 +23,12 @@ describe('RestaurantList', () => {
   let wrapper;
   let restaurantModule;
 
-  beforeEach(() => {
+  const mountWithStore = (state = {records}) => {
     // mock the store module
+
     restaurantModule = {
       namespaced: true,
-      state: {records},
+      state,
       actions: {
         load: jest.fn().mockName('load'),
       },
@@ -45,13 +46,17 @@ describe('RestaurantList', () => {
       localVue,
       store,
     });
-  });
+  };
 
   it('loads restaurants on mount', () => {
+    mountWithStore();
+
     expect(restaurantModule.actions.load).toHaveBeenCalled();
   });
 
   it('loads the restaurants', () => {
+    mountWithStore();
+
     expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Sushi Place');
     expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Pizza Place');
   });
