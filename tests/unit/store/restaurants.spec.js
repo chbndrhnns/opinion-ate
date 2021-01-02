@@ -134,8 +134,7 @@ describe('create action', () => {
       // to make Jest wait until the promise resolves, we return it from the test
       // (at least according to the docs)
       // cf. https://outsidein.dev/vue/6-writing-data.html#clearing-the-text-field
-      // seems also to work without
-      expect(promise).resolves.toBeUndefined();
+      return expect(promise).resolves.toBeUndefined();
     });
   });
 
@@ -143,5 +142,13 @@ describe('create action', () => {
     api.createRestaurant.mockResolvedValue(responseRestaurant);
     store.dispatch('restaurants/create', newRestaurantName);
     expect(api.createRestaurant).toHaveBeenCalledWith(newRestaurantName);
+  });
+
+  describe('when save fails', () => {
+    it('rejects', () => {
+      api.createRestaurant.mockRejectedValue();
+      promise = store.dispatch('restaurants/create', newRestaurantName);
+      return expect(promise).rejects.toBeUndefined();
+    });
   });
 });

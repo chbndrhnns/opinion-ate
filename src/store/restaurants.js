@@ -8,7 +8,7 @@ const restaurants = (api, stateOverrides) => ({
   },
   actions: {
     create({commit}, newRestaurantName) {
-      api.createRestaurant(newRestaurantName).then(record => {
+      return api.createRestaurant(newRestaurantName).then(record => {
         commit('addRecord', record);
       });
     },
