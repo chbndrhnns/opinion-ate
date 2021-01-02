@@ -10,6 +10,13 @@ Vue.use(Vuetify);
 describe('NewRestaurantForm', () => {
   const restaurantName = 'Sushi Place';
 
+  const components = {
+    serverError: 'new-restaurant-server-error',
+    nameError: 'new-restaurant-name-error',
+    nameField: 'new-restaurant-name-field',
+    submitButton: 'new-restaurant-submit-button',
+  };
+
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
@@ -46,13 +53,13 @@ describe('NewRestaurantForm', () => {
   describe('initially', () => {
     it('does not display a validation error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-error"]').exists(),
+        wrapper.find(`[data-testid=${components.nameError}]`).exists(),
       ).toBe(false);
     });
 
     it('does not display a server error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-server-error"]').exists(),
+        wrapper.find(`[data-testid=${components.serverError}]`).exists(),
       ).toBe(false);
     });
   });
@@ -60,11 +67,9 @@ describe('NewRestaurantForm', () => {
   describe('when filled in', () => {
     beforeEach(() => {
       wrapper
-        .find('[data-testid="new-restaurant-name-field"')
+        .find(`[data-testid=${components.nameField}]`)
         .setValue(restaurantName);
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
     });
     it('dispatches the create action', () => {
       expect(restaurantsModule.actions.create).toHaveBeenCalledWith(
@@ -74,39 +79,35 @@ describe('NewRestaurantForm', () => {
     });
     it('clears the name', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-field"]').element.value,
+        wrapper.find(`[data-testid=${components.nameField}]`).element.value,
       ).toEqual('');
     });
     it('does not display a validation error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-error"]').exists(),
+        wrapper.find(`[data-testid=${components.nameError}]`).exists(),
       ).toBe(false);
     });
 
     it('does not display a server error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-server-error"]').exists(),
+        wrapper.find(`[data-testid=${components.serverError}]`).exists(),
       ).toBe(false);
     });
   });
 
   describe('when correcting a validation error', () => {
     beforeEach(() => {
-      wrapper.find('[data-testid="new-restaurant-name-field"]').setValue('');
+      wrapper.find(`[data-testid=${components.nameField}]`).setValue('');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
       wrapper
-        .find('[data-testid="new-restaurant-submit-button"')
-        .trigger('click');
-      wrapper
-        .find('[data-testid="new-restaurant-name-field"]')
+        .find(`[data-testid=${components.nameField}]`)
         .setValue(restaurantName);
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
     });
 
     it('clears the validation error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-error"]').exists(),
+        wrapper.find(`[data-testid=${components.nameError}]`).exists(),
       ).toEqual(false);
     });
   });
@@ -118,35 +119,29 @@ describe('NewRestaurantForm', () => {
         .mockResolvedValueOnce();
 
       wrapper
-        .find('[data-testid="new-restaurant-name-field"]')
+        .find(`[data-testid=${components.nameField}]`)
         .setValue('Sushi Place');
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"]')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
       await flushPromises();
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"]')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
     });
 
     it('clears the server error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-server-error"]').exists(),
+        wrapper.find(`[data-testid=${components.serverError}]`).exists(),
       ).toBe(false);
     });
   });
 
   describe('when empty', () => {
     beforeEach(() => {
-      wrapper.find('[data-testid="new-restaurant-name-field"]').setValue('');
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"]')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.nameField}]`).setValue('');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
     });
 
     it('displays a validation error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-error"]').text(),
+        wrapper.find(`[data-testid=${components.nameError}]`).text(),
       ).toContain('Name is required');
     });
 
@@ -160,22 +155,20 @@ describe('NewRestaurantForm', () => {
       restaurantsModule.actions.create.mockRejectedValue();
 
       wrapper
-        .find('[data-testid="new-restaurant-name-field"]')
+        .find(`[data-testid=${components.nameField}]`)
         .setValue(restaurantName);
-      wrapper
-        .find('[data-testid="new-restaurant-submit-button"]')
-        .trigger('click');
+      wrapper.find(`[data-testid=${components.submitButton}]`).trigger('click');
     });
 
     it('displays a server error', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-server-error"]').text(),
+        wrapper.find(`[data-testid=${components.serverError}]`).text(),
       ).toContain('The restaurant could not be saved. Please try again.');
     });
 
     it('does not clear the name', () => {
       expect(
-        wrapper.find('[data-testid="new-restaurant-name-field"]').element.value,
+        wrapper.find(`[data-testid=${components.nameField}]`).element.value,
       ).toEqual(restaurantName);
     });
   });
