@@ -1,6 +1,10 @@
 <template>
   <form @submit.prevent="handleSave">
-    <v-alert type="error" data-testid="new-restaurant-name-error" :icon="false"
+    <v-alert
+      type="error"
+      v-if="validationError"
+      data-testid="new-restaurant-name-error"
+      :icon="false"
       >Name is required.</v-alert
     >
     <v-text-field
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       name: '',
+      validationError: false,
     };
   },
   methods: {
@@ -35,9 +40,14 @@ export default {
       createRestaurant: 'restaurants/create',
     }),
     handleSave() {
-      this.createRestaurant(this.name).then(() => {
-        this.name = '';
-      });
+      if (this.name) {
+        this.createRestaurant(this.name).then(() => {
+          this.name = '';
+          this.validationError = false;
+        });
+      } else {
+        this.validationError = true;
+      }
     },
   },
 };
