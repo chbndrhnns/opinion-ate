@@ -32,7 +32,9 @@ export default {
       createRestaurant: 'restaurants/create',
     }),
     handleSave() {
-      this.createRestaurant(this.name);
+      this.createRestaurant(this.name).then(() => {
+        this.name = '';
+      });
     },
   },
 };

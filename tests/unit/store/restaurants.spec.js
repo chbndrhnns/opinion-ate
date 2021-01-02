@@ -103,6 +103,7 @@ describe('create action', () => {
 
   let api;
   let store;
+  let promise;
 
   beforeEach(() => {
     api = {
@@ -118,7 +119,8 @@ describe('create action', () => {
   describe('when save succeeds', () => {
     beforeEach(() => {
       api.createRestaurant.mockResolvedValue(responseRestaurant);
-      store.dispatch('restaurants/create', newRestaurantName);
+      // We need access to the promise that the store creates
+      promise = store.dispatch('restaurants/create', newRestaurantName);
     });
 
     it('stores the returned restaurant in the store', () => {
@@ -126,6 +128,14 @@ describe('create action', () => {
         existingRestaurant,
         responseRestaurant,
       ]);
+    });
+
+    it('resolves', () => {
+      // to make Jest wait until the promise resolves, we return it from the test
+      // (at least according to the docs)
+      // cf. https://outsidein.dev/vue/6-writing-data.html#clearing-the-text-field
+      // seems also to work without
+      expect(promise).resolves.toBeUndefined();
     });
   });
 
