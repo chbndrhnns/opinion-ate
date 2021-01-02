@@ -7,6 +7,11 @@ const restaurants = (api, stateOverrides) => ({
     ...stateOverrides,
   },
   actions: {
+    create({commit}, newRestaurantName) {
+      return api.createRestaurant(newRestaurantName).then(record => {
+        commit('addRecord', record);
+      });
+    },
     load({commit}) {
       commit('startLoading');
       api
@@ -31,6 +36,9 @@ const restaurants = (api, stateOverrides) => ({
     storeRecords(state, records) {
       state.records = records;
       state.loading = false;
+    },
+    addRecord(state, record) {
+      state.records.push(record);
     },
   },
 });

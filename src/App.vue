@@ -3,11 +3,11 @@
     <v-app-bar color="primary" fixed app>
       <v-toolbar-title>Opinion Ate</v-toolbar-title>
     </v-app-bar>
-    <v-content>
+    <v-main>
       <v-container>
         <RestaurantScreen />
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
