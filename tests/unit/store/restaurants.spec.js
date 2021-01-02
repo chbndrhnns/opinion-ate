@@ -99,7 +99,7 @@ describe('load action', () => {
 describe('create action', () => {
   const newRestaurantName = 'Sushi Place';
   const existingRestaurant = {id: 1, name: 'Pizza Place'};
-  const responseRestaurant = {id: 1, name: newRestaurantName};
+  const responseRestaurant = {id: 2, name: newRestaurantName};
 
   let api;
   let store;
